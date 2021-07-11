@@ -9,6 +9,13 @@ const AppProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("batman");
   const [cocktails, setCocktails] = useState([]);
+  const [watch, setWatch] = useState([]);
+  const [list, setList] = useState([]);
+  const [recloading, setRecLoading] = useState(false);
+  const setting = (id, title, poster_path) => {
+    const newItem = { id, title, poster_path };
+    setWatch([...watch, newItem]);
+  };
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -49,7 +56,20 @@ const AppProvider = ({ children }) => {
     fetchData();
   }, [searchTerm, fetchData]);
   return (
-    <AppContext.Provider value={{ loading, cocktails, setSearchTerm }}>
+    <AppContext.Provider
+      value={{
+        loading,
+        cocktails,
+        setSearchTerm,
+        setWatch,
+        watch,
+        setting,
+        list,
+        setList,
+        recloading,
+        setRecLoading,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

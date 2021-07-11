@@ -1,13 +1,15 @@
 import React from "react";
+import { useEffect } from "react";
 import Loading from "../components/Loading";
 import { useParams, Link } from "react-router-dom";
 import Recomentaions from "../components/Recomentaions";
+import { useGlobalContext } from "../context";
 export default function SingleCocktail() {
   const { id } = useParams();
   const [loading, setLoading] = React.useState(false);
   const [cocktail, setCocktail] = React.useState(null);
-
-  React.useEffect(() => {
+  const { watch, setWatch, setting } = useGlobalContext();
+  useEffect(() => {
     setLoading(true);
     async function getCocktail() {
       try {
@@ -44,6 +46,11 @@ export default function SingleCocktail() {
     }
     getCocktail();
   }, [id]);
+  useEffect(() => {
+    if (watch.length === 0) {
+      setWatch([...watch, id]);
+    }
+  }, []);
 
   if (loading) {
     return <Loading />;
@@ -60,6 +67,10 @@ export default function SingleCocktail() {
       overview,
     } = cocktail;
     const image = `https://image.tmdb.org/t/p/w500/${poster_path}`;
+
+    const handler = () => {
+      setting(id, title, image);
+    };
     return (
       <>
         <section className="section cocktail-section">
@@ -88,6 +99,9 @@ export default function SingleCocktail() {
                 <span className="drink-data">Overview :</span>
                 {overview}
               </p>
+              <button className="btn btn-primary" onClick={handler}>
+                Add to watchlist
+              </button>
             </div>
           </div>
         </section>
